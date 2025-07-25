@@ -12,9 +12,10 @@ import java.util.Map;
 @Data
 public class Post {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @MapKey(name = "level")
     private Map<LanguageLevel, PostTranslation> translations = new EnumMap<>(LanguageLevel.class);
 

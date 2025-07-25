@@ -15,7 +15,7 @@ public class Bookmark {
 
     private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
