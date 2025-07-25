@@ -1,5 +1,1 @@
 rootProject.name = 'wordflow'
-include 'wordflow-kernel'
-include 'wordflow-kernel'
-include 'worflow_kernel'
-include 'wordflow_user'
