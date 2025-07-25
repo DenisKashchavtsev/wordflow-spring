@@ -3,7 +3,7 @@ package pro.dkart.wordflow.blog.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pro.dkart.wordflow.blog.domain.model.Post;
-import pro.dkart.wordflow.blog.infrastructure.PostRepository;
+import pro.dkart.wordflow.blog.infrastructure.repository.PostRepository;
 
 import java.util.List;
 import java.util.Optional;

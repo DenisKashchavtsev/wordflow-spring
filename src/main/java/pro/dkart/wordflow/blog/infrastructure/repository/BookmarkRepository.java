@@ -1,4 +1,4 @@
-package pro.dkart.wordflow.blog.infrastructure;
+package pro.dkart.wordflow.blog.infrastructure.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import pro.dkart.wordflow.blog.domain.model.Bookmark;

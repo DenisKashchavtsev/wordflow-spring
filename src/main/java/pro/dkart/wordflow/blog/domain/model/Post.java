@@ -3,6 +3,7 @@ package pro.dkart.wordflow.blog.domain.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import pro.dkart.wordflow.kernel.LanguageLevel;
+import pro.dkart.wordflow.kernel.LanguageRangeLevel;
 
 import java.time.LocalDateTime;
 import java.util.EnumMap;
@@ -15,9 +16,26 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post",  cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @MapKey(name = "level")
-    private Map<LanguageLevel, PostTranslation> translations = new EnumMap<>(LanguageLevel.class);
+    private Map<LanguageRangeLevel, PostTranslation> translations = new EnumMap<>(LanguageRangeLevel.class);
+
+    private String link;
+
+    private String imageUrl;
+
+    private String metaTitle;
+
+    @Column(length = 500)
+    private String metaDescription;
+
+    @Column(length = 500)
+    private String keywords;
+
+    private String title;
+
+    @Column(length = 50000)
+    private String content;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 }

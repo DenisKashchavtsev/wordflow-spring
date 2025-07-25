@@ -11,8 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import pro.dkart.wordflow.blog.domain.model.Bookmark;
 import pro.dkart.wordflow.blog.domain.model.Post;
-import pro.dkart.wordflow.blog.infrastructure.BookmarkRepository;
-import pro.dkart.wordflow.blog.infrastructure.PostRepository;
+import pro.dkart.wordflow.blog.infrastructure.repository.BookmarkRepository;
+import pro.dkart.wordflow.blog.infrastructure.repository.PostRepository;
 
 import java.time.LocalDateTime;
 
