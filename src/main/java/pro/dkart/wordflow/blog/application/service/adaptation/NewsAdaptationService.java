@@ -67,6 +67,7 @@ public class NewsAdaptationService {
                         String shortContent = originalText.length() > 300 ? originalText.substring(0, 300).replaceAll("\\s+", " ").trim() + "..." : originalText;
                         post.setMetaDescription("Learn English through good news: \"" + entry.getTitle() + "\" — simplified for language learners. " + shortContent);
                         post.setKeywords(generateKeywords(entry.getTitle()));
+                        post.setSlug(generateUniqueSlug(entry.getTitle()));
 
                         post.setImageUrl(goodNewsNetworkParser.extractArticleImage(articleUrl));
 
@@ -120,4 +121,23 @@ public class NewsAdaptationService {
                 .replaceAll("\\s+", ", "); // заменяем пробелы на запятые
     }
 
+    private String generateSlug(String title) {
+        return title.toLowerCase()
+                .replaceAll("[^a-z0-9\\s]", "")
+                .replaceAll("\\s+", "-")
+                .replaceAll("[-]+", "-")
+                .replaceAll("^-|-$", "");
+    }
+
+    private String generateUniqueSlug(String title) {
+        String baseSlug = generateSlug(title);
+        String slug = baseSlug;
+        int index = 1;
+
+        while (postRepository.existsBySlug(slug)) {
+            slug = baseSlug + "-" + index++;
+        }
+
+        return slug;
+    }
 }

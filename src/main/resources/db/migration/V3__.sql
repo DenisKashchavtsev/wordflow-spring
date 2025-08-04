@@ -1,0 +1,5 @@
+ALTER TABLE post
+    ALTER COLUMN slug SET NOT NULL;
+
+ALTER TABLE post
+    ADD CONSTRAINT uc_post_slug UNIQUE (slug);

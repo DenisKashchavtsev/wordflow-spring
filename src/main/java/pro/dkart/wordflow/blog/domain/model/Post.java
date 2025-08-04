@@ -1,5 +1,6 @@
 package pro.dkart.wordflow.blog.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import pro.dkart.wordflow.kernel.LanguageLevel;
@@ -16,6 +17,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "post",  cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @MapKey(name = "level")
     private Map<LanguageRangeLevel, PostTranslation> translations = new EnumMap<>(LanguageRangeLevel.class);
@@ -36,6 +38,9 @@ public class Post {
 
     @Column(length = 50000)
     private String content;
+
+    @Column(unique = true, nullable = false)
+    private String slug;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 }

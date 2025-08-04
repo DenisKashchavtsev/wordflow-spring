@@ -3,8 +3,11 @@ package pro.dkart.wordflow.blog.application.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pro.dkart.wordflow.blog.application.dto.response.PostResponse;
+import pro.dkart.wordflow.blog.application.dto.response.PostsResponse;
 import pro.dkart.wordflow.blog.application.service.PostService;
 import pro.dkart.wordflow.blog.domain.model.Post;
+import pro.dkart.wordflow.kernel.LanguageRangeLevel;
 
 import java.util.List;
 
@@ -16,14 +19,23 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
-    public ResponseEntity<List<Post>> listPosts() {
-        return ResponseEntity.ok(postService.findAll());
+    public PostsResponse listPosts(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) String level) {
+        level = level == null ? LanguageRangeLevel.C1_C2.name() : level;
+
+        return postService.findAllByLevel(level, page);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Post> getPost(@PathVariable Long id) {
-        return postService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/latest")
+    public ResponseEntity<List<Post>> getLatest(@RequestParam Long limit) {
+        return ResponseEntity.ok(postService.getLatest(limit));
+    }
+
+    @GetMapping("/{slug}")
+    public PostResponse getPost(@PathVariable String slug, @RequestParam(value = "level", required = false) String level) {
+        level = level == null ? LanguageRangeLevel.C1_C2.name() : level;
+
+        return postService.findByIdAndLevel(slug, level);
     }
 }
