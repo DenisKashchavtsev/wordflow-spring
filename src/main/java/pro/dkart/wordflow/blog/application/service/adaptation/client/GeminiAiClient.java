@@ -7,7 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import pro.dkart.wordflow.kernel.LanguageLevel;
+import pro.dkart.wordflow.blog.application.dto.AdaptedArticle;
 import pro.dkart.wordflow.kernel.LanguageRangeLevel;
 import reactor.core.publisher.Mono;
 
@@ -27,14 +27,16 @@ public class GeminiAiClient {
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
 
-    public String adaptText(String originalText, LanguageRangeLevel level) {
+    public AdaptedArticle adaptText(String originalText, LanguageRangeLevel level) {
         String prompt = String.format(
-                "Simplify the following English text to the %s level. " +
-                        "Respond **only** with the simplified version of the text. " +
-                        "Do not include any explanations, formatting, introductions, or additional notes:\n\n%s",
+                "Simplify the following English text to CEFR level %s.\n" +
+                        "Then write a unique new article inspired by the simplified content and ideas. Do not copy structure or wording, don't mention source or author.\n" +
+                        "Return the result as HTML with the title wrapped in triple asterisks (***). Include proper HTML tags just <ul>, <li>, <p>, <b>, <a>, <h2>, <h3>, <h4>, <h5>, <h6>.\n" +
+                        "Respond **only** with the full HTML content, Do not include any explanations, formatting, introductions, or additional notes:\n\n%s",
+
                 level.name(), originalText
         );
-        
+
         Map<String, Object> requestBody = Map.of(
                 "contents", List.of(
                         Map.of("parts", List.of(
@@ -60,11 +62,25 @@ public class GeminiAiClient {
             Map content = (Map) candidate.get("content");
             List parts = (List) content.get("parts");
             Map firstPart = (Map) parts.get(0);
-            return firstPart.get("text").toString().trim();
+            String html = firstPart.get("text").toString().trim();
+
+            // Парсим заголовок из ***Title***
+            String title = null;
+            String body = html;
+
+            int start = html.indexOf("***");
+            int end = html.indexOf("***", start + 3);
+
+            if (start != -1 && end != -1 && end > start) {
+                title = html.substring(start + 3, end).trim();
+                body = html.substring(end + 3).trim();
+            }
+
+            return new AdaptedArticle(title, body);
 
         } catch (Exception e) {
             log.error("Ошибка при обращении к Gemini AI: {}", e.getMessage(), e);
-            return originalText; // fallback
+            return new AdaptedArticle(null, originalText); // fallback
         }
     }
 }

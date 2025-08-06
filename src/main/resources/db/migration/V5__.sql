@@ -1,0 +1,10 @@
+ALTER TABLE post
+    ADD image VARCHAR(255);
+
+ALTER TABLE post
+DROP
+COLUMN image_url;
+
+ALTER TABLE post
+DROP
+COLUMN link;

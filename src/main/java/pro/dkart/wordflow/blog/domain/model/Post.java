@@ -24,20 +24,7 @@ public class Post {
 
     private String link;
 
-    private String imageUrl;
-
-    private String metaTitle;
-
-    @Column(length = 500)
-    private String metaDescription;
-
-    @Column(length = 500)
-    private String keywords;
-
-    private String title;
-
-    @Column(length = 50000)
-    private String content;
+    private String image;
 
     @Column(unique = true, nullable = false)
     private String slug;

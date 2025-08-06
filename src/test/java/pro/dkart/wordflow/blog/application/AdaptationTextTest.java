@@ -15,7 +15,7 @@ public class AdaptationTextTest {
     NewsAdaptationService fetchNewsCommand;
 
     @Test
-    void testNewsFetching() {
+    void testNewsFetching() throws Exception {
         fetchNewsCommand.fetchAndAdaptNews();
         assertTrue(true);
     }

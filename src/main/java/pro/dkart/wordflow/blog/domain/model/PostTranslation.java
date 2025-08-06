@@ -1,10 +1,7 @@
 package pro.dkart.wordflow.blog.domain.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import pro.dkart.wordflow.kernel.LanguageLevel;
 import pro.dkart.wordflow.kernel.LanguageRangeLevel;
 
 import java.time.LocalDateTime;
@@ -20,6 +17,14 @@ public class PostTranslation {
     @Column(length = 5)
     @Enumerated(EnumType.STRING)
     private LanguageRangeLevel level;
+
+    private String metaTitle;
+
+    @Column(length = 500)
+    private String metaDescription;
+
+    @Column(length = 500)
+    private String keywords;
 
     private String title;
 

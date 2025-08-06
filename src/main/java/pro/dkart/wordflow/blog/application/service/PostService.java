@@ -27,12 +27,10 @@ public class PostService {
         int pageSize = 10; // можешь вынести в константу или параметр
 
         LanguageRangeLevel rangeLevel = null;
-        try {
-            if (level != null) {
-                rangeLevel = LanguageRangeLevel.valueOf(level.toUpperCase(Locale.ROOT));
-            }
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid level: " + level);
+        if (level != null) {
+            rangeLevel = LanguageRangeLevel.valueOf(level.toUpperCase(Locale.ROOT));
+        } else {
+            rangeLevel = LanguageRangeLevel.valueOf("B1_B2");
         }
 
         var pageable = PageRequest.of(pageNumber, pageSize);
@@ -41,25 +39,18 @@ public class PostService {
         LanguageRangeLevel finalRangeLevel = rangeLevel;
         List<PostResponse> posts = pageResult.stream()
                 .map(post -> {
-                    boolean isOriginal = finalRangeLevel == null || finalRangeLevel == LanguageRangeLevel.C1_C2;
-                    String title = isOriginal ? post.getTitle()
-                            : Optional.ofNullable(post.getTranslations().get(finalRangeLevel))
-                            .map(PostTranslation::getTitle).orElse(post.getTitle());
 
-                    String content = isOriginal ? post.getContent()
-                            : Optional.ofNullable(post.getTranslations().get(finalRangeLevel))
-                            .map(PostTranslation::getContent).orElse(post.getContent());
+                    PostTranslation postTranslation = post.getTranslations().get(finalRangeLevel);
 
                     return new PostResponse(
-                            isOriginal ? "C1_C2" : finalRangeLevel.name(),
-                            post.getMetaTitle(),
-                            post.getMetaDescription(),
-                            post.getKeywords(),
+                            finalRangeLevel.name(),
+                            postTranslation.getMetaTitle(),
+                            postTranslation.getMetaDescription(),
+                            postTranslation.getKeywords(),
+                            postTranslation.getTitle(),
+                            postTranslation.getContent(),
                             post.getSlug(),
-                            title,
-                            content,
-                            post.getImageUrl(),
-                            post.getLink(),
+                            post.getImage(),
                             post.getCreatedAt()
                     );
                 })
@@ -80,33 +71,17 @@ public class PostService {
 
         Post post = postRepository.findBySlug(slug).orElseThrow();
 
-        PostTranslation translation = post.getTranslations().get(LanguageRangeLevel.valueOf(level));
-
-        if (!Objects.equals(level, LanguageRangeLevel.C1_C2.name())) {
-            return new PostResponse(
-                    level,
-                    post.getMetaTitle(),
-                    post.getMetaDescription(),
-                    post.getKeywords(),
-                    post.getSlug(),
-                    translation.getTitle(),
-                    translation.getContent(),
-                    post.getImageUrl(),
-                    post.getLink(),
-                    post.getCreatedAt()
-            );
-        }
+        PostTranslation postTranslation = post.getTranslations().get(LanguageRangeLevel.valueOf(level));
 
         return new PostResponse(
                 level,
-                post.getMetaTitle(),
-                post.getMetaDescription(),
-                post.getKeywords(),
+                postTranslation.getMetaTitle(),
+                postTranslation.getMetaDescription(),
+                postTranslation.getKeywords(),
+                postTranslation.getTitle(),
+                postTranslation.getContent(),
                 post.getSlug(),
-                post.getTitle(),
-                post.getContent(),
-                post.getImageUrl(),
-                post.getLink(),
+                post.getImage(),
                 post.getCreatedAt()
         );
     }
