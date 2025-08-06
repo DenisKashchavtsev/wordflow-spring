@@ -22,9 +22,9 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    public PostsResponse findAllByLevel(String level, Integer page) {
+    public PostsResponse findAllByLevel(String level, Integer page, Integer limit) {
         int pageNumber = page != null && page > 0 ? page - 1 : 0;
-        int pageSize = 10; // можешь вынести в константу или параметр
+        int pageSize = limit != null ? limit : 10;
 
         LanguageRangeLevel rangeLevel = null;
         if (level != null) {
@@ -63,9 +63,9 @@ public class PostService {
         );
     }
 
-    public List<Post> getLatest(Long limit) {
-        return postRepository.findLatest(PageRequest.of(0, limit.intValue()));
-    }
+//    public List<Post> getLatest(Long limit) {
+//        return postRepository.findLatest(PageRequest.of(0, limit.intValue()));
+//    }
 
     public PostResponse findByIdAndLevel(String slug, String level) {
 

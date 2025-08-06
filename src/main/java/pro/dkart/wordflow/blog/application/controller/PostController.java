@@ -21,15 +21,12 @@ public class PostController {
     @GetMapping
     public PostsResponse listPosts(
             @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) String level) {
+            @RequestParam(required = false) String level,
+            @RequestParam(required = false) Integer limit) {
         level = level == null ? LanguageRangeLevel.C1_C2.name() : level;
+        limit = limit == null || limit > 25 ? 10 : limit;
 
-        return postService.findAllByLevel(level, page);
-    }
-
-    @GetMapping("/latest")
-    public ResponseEntity<List<Post>> getLatest(@RequestParam Long limit) {
-        return ResponseEntity.ok(postService.getLatest(limit));
+        return postService.findAllByLevel(level, page, limit);
     }
 
     @GetMapping("/{slug}")
